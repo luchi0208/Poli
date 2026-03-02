@@ -56,16 +56,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func setupMenuBar() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = statusItem.button {
-            button.image = NSImage(
-                systemSymbolName: "pencil.and.outline",
-                accessibilityDescription: "Writing Assistant"
-            )
+            let icon = NSImage(named: "MenuBarIcon")
+            icon?.isTemplate = true
+            icon?.size = NSSize(width: 18, height: 18)
+            button.image = icon
+            button.image?.accessibilityDescription = "Poli"
         }
 
         let menu = NSMenu()
         menu.delegate = self
 
-        let headerItem = NSMenuItem(title: "Writing Assistant", action: nil, keyEquivalent: "")
+        let headerItem = NSMenuItem(title: "Poli", action: nil, keyEquivalent: "")
         headerItem.isEnabled = false
         menu.addItem(headerItem)
 
@@ -153,7 +154,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(NSMenuItem.separator())
 
         let quitItem = NSMenuItem(
-            title: "Quit Writing Assistant",
+            title: "Quit Poli",
             action: #selector(NSApplication.terminate(_:)),
             keyEquivalent: "q"
         )

@@ -142,12 +142,11 @@ struct SettingsContentView: View {
                 .padding(.bottom, 10)
 
             HStack(spacing: 10) {
-                Image(systemName: "pencil.and.outline")
-                    .font(.system(size: 14))
-                    .foregroundStyle(Brand.accentColor)
-                    .frame(width: 20)
+                Image(nsImage: NSApp.applicationIconImage)
+                    .resizable()
+                    .frame(width: 20, height: 20)
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("Writing Assistant v\(version)")
+                    Text("Poli v\(version)")
                         .font(Brand.Typography.bodyMedium)
                     Text("Build \(build) \u{00b7} Powered by Apple Intelligence")
                         .font(Brand.Typography.captionSecondary)

@@ -346,7 +346,7 @@ final class GlobalHotkeyManager {
             backing: .buffered,
             defer: false
         )
-        panel.title = "Writing Assistant"
+        panel.title = "Poli"
         panel.isFloatingPanel = true
         panel.level = .floating
         panel.hidesOnDeactivate = false

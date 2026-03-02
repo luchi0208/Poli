@@ -92,11 +92,11 @@ private struct WelcomeStep: View {
         VStack(spacing: 0) {
             Spacer().frame(height: 36)
 
-            Image(systemName: "pencil.and.outline")
-                .font(.system(size: 44, weight: .light))
-                .foregroundStyle(Brand.accentColor)
+            Image(nsImage: NSApp.applicationIconImage)
+                .resizable()
+                .frame(width: 64, height: 64)
 
-            Text("Writing Assistant")
+            Text("Poli")
                 .font(Brand.Typography.serifTitle)
                 .padding(.top, 14)
 
@@ -114,13 +114,7 @@ private struct WelcomeStep: View {
                             .font(.system(size: 13))
                             .foregroundStyle(Brand.accentColor)
                             .frame(width: 18)
-                        HStack(spacing: 0) {
-                            Text(feature.title)
-                                .font(.system(size: 13, weight: .semibold, design: .serif))
-                            Text(" \u{2014} \(feature.detail)")
-                                .font(.system(size: 13))
-                                .foregroundStyle(.secondary)
-                        }
+                        Text("\(Text(feature.title).font(.system(size: 13, weight: .semibold, design: .serif)))\(Text(" \u{2014} \(feature.detail)").font(.system(size: 13)).foregroundStyle(.secondary))")
                     }
                 }
             }
@@ -156,7 +150,7 @@ private struct AccessibilityStep: View {
                 .font(Brand.Typography.serifHeading)
                 .padding(.top, 14)
 
-            Text("Writing Assistant needs Accessibility access to read selected text and replace it with the improved version.")
+            Text("Poli needs Accessibility access to read selected text and replace it with the improved version.")
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -309,7 +303,7 @@ final class OnboardingWindowController {
             backing: .buffered,
             defer: false
         )
-        window.title = "Welcome to Writing Assistant"
+        window.title = "Welcome to Poli"
         window.center()
         window.isReleasedWhenClosed = false
         window.level = .floating

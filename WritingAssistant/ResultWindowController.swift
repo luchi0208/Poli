@@ -806,14 +806,14 @@ struct ResultContentView: View {
                     HStack(spacing: 4) {
                         Image(systemName: "checkmark")
                         Text("Replace")
-                        Text("↩")
+                        Text("⌘R")
                             .font(.system(size: 10, design: .monospaced))
                             .foregroundStyle(.white.opacity(0.6))
                     }
                 }
                 .buttonStyle(BrandButtonStyle(isEnabled: viewModel.isAcceptEnabled))
                 .disabled(!viewModel.isAcceptEnabled)
-                .keyboardShortcut(.return, modifiers: [])
+                .keyboardShortcut("r", modifiers: .command)
             }
             .padding(.top, 8)
             .padding(.horizontal, Brand.Layout.margin)
@@ -922,7 +922,7 @@ final class ResultWindowController {
             backing: .buffered,
             defer: false
         )
-        panel.title = "Writing Assistant"
+        panel.title = "Poli"
         panel.isFloatingPanel = true
         panel.level = .floating
         panel.hidesOnDeactivate = false
