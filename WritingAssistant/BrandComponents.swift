@@ -157,20 +157,20 @@ struct QuoteBlock: View {
                 .padding(.leading, 10)
 
             Text(text)
-                .font(.system(size: 12, design: .serif))
+                .font(.system(size: 11, design: .serif))
                 .italic()
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.tertiary)
                 .lineLimit(maxLines)
                 .truncationMode(.tail)
                 .lineSpacing(2)
                 .padding(.leading, 10)
                 .padding(.trailing, 12)
-                .padding(.vertical, 8)
+                .padding(.vertical, 6)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 6)
-                .fill(Brand.subtleColor.opacity(0.5))
+                .fill(Brand.subtleColor.opacity(0.3))
         )
     }
 }

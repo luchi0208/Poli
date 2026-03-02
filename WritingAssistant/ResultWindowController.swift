@@ -641,9 +641,9 @@ struct ResultContentView: View {
             // Quote block — compact, fits content, capped height
             QuoteBlock(text: viewModel.previewText)
                 .fixedSize(horizontal: false, vertical: true)
-                .frame(maxHeight: 56)
+                .frame(maxHeight: 44)
                 .clipped()
-                .padding(.top, 10)
+                .padding(.top, 8)
                 .padding(.horizontal, Brand.Layout.margin)
 
             // Tone detection badge
@@ -708,19 +708,27 @@ struct ResultContentView: View {
             }
 
             // Streaming text area — fills remaining vertical space
-            StreamingTextView(viewModel: viewModel)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .clipShape(RoundedRectangle(cornerRadius: Brand.Layout.smallCornerRadius))
-                .overlay(
-                    RoundedRectangle(cornerRadius: Brand.Layout.smallCornerRadius)
-                        .strokeBorder(Color(nsColor: .separatorColor).opacity(0.25), lineWidth: 0.5)
-                )
-                .background(
-                    RoundedRectangle(cornerRadius: Brand.Layout.smallCornerRadius)
-                        .fill(Color(nsColor: .textBackgroundColor))
-                )
-                .padding(.top, 8)
-                .padding(.horizontal, Brand.Layout.margin)
+            HStack(spacing: 0) {
+                // Accent left border
+                RoundedRectangle(cornerRadius: 1)
+                    .fill(Brand.accentColor)
+                    .frame(width: 3)
+                    .padding(.vertical, 8)
+
+                StreamingTextView(viewModel: viewModel)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: Brand.Layout.smallCornerRadius))
+            .overlay(
+                RoundedRectangle(cornerRadius: Brand.Layout.smallCornerRadius)
+                    .strokeBorder(Brand.accentColor.opacity(0.15), lineWidth: 0.5)
+            )
+            .background(
+                RoundedRectangle(cornerRadius: Brand.Layout.smallCornerRadius)
+                    .fill(Color(nsColor: .textBackgroundColor))
+            )
+            .padding(.top, 8)
+            .padding(.horizontal, Brand.Layout.margin)
 
             // Stats row — always present to avoid layout jumps, content hidden when empty
             Text(viewModel.statsText.isEmpty ? " " : viewModel.statsText)
@@ -740,33 +748,38 @@ struct ResultContentView: View {
             // Button bar
             HStack(spacing: 6) {
                 if viewModel.isRetryVisible && !viewModel.isProcessing {
-                    Button {
-                        onRetry()
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "arrow.clockwise")
-                            Text("Rewrite")
-                            Text("⌘R")
-                                .font(.system(size: 10, design: .monospaced))
-                                .foregroundStyle(.tertiary)
+                    VStack(spacing: 3) {
+                        Button {
+                            onRetry()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "arrow.clockwise")
+                                Text("Rewrite")
+                            }
                         }
+                        .buttonStyle(BrandButtonStyle(prominent: false))
+                        .keyboardShortcut("e", modifiers: .command)
+                        Text("⌘E")
+                            .font(.system(size: 9, design: .monospaced))
+                            .foregroundStyle(.tertiary)
                     }
-                    .buttonStyle(BrandButtonStyle(prominent: false))
                 }
 
                 if !viewModel.isProcessing {
-                    Button {
-                        onCopyAndClose()
-                    } label: {
-                        HStack(spacing: 4) {
-                            Image(systemName: "doc.on.doc")
-                            Text("Copy")
-                            Text("⌘C")
-                                .font(.system(size: 10, design: .monospaced))
-                                .foregroundStyle(.tertiary)
+                    VStack(spacing: 3) {
+                        Button {
+                            onCopyAndClose()
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "doc.on.doc")
+                                Text("Copy")
+                            }
                         }
+                        .buttonStyle(BrandButtonStyle(prominent: false))
+                        Text("⌘C")
+                            .font(.system(size: 9, design: .monospaced))
+                            .foregroundStyle(.tertiary)
                     }
-                    .buttonStyle(BrandButtonStyle(prominent: false))
                 }
 
                 if viewModel.canSavePrompt && !viewModel.promptSaved {
@@ -1023,8 +1036,13 @@ final class ResultWindowController {
                 return nil
             }
 
-            if cmd && event.keyCode == 0x0F { // Cmd+R
+            if cmd && event.keyCode == 0x0E { // Cmd+E
                 self.retry()
+                return nil
+            }
+
+            if cmd && !event.modifierFlags.contains(.shift) && event.keyCode == 0x0F { // Cmd+R
+                self.accept(resultText: self.viewModel?.resultText ?? "")
                 return nil
             }
 
