@@ -36,8 +36,6 @@ final class ResultViewModel {
     var statsText: String = ""
     var customPromptText: String = ""
     var isCustomPromptMode: Bool = false
-    var detectedTone: DetectedTone?
-    var isDetectingTone: Bool = false
 
     // Callbacks to bridge panel behavior
     var onAllowKeyStatus: ((Bool) -> Void)?
@@ -638,37 +636,6 @@ struct ResultContentView: View {
             .padding(.top, 16)
             .padding(.horizontal, Brand.Layout.margin)
 
-            // Quote block — compact, fits content, capped height
-            QuoteBlock(text: viewModel.previewText)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(maxHeight: 44)
-                .clipped()
-                .padding(.top, 8)
-                .padding(.horizontal, Brand.Layout.margin)
-
-            // Tone detection badge
-            if viewModel.isDetectingTone {
-                HStack(spacing: 4) {
-                    ProgressView()
-                        .controlSize(.mini)
-                    Text("Detecting tone\u{2026}")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.tertiary)
-                }
-                .padding(.top, 6)
-                .padding(.horizontal, Brand.Layout.margin)
-            } else if let tone = viewModel.detectedTone {
-                HStack(spacing: 4) {
-                    Image(systemName: tone.iconName)
-                        .font(.system(size: 11))
-                    Text("Original tone: \(tone.displayName)")
-                        .font(.system(size: 11, weight: .medium))
-                }
-                .foregroundStyle(.secondary)
-                .padding(.top, 6)
-                .padding(.horizontal, Brand.Layout.margin)
-            }
-
             // Custom prompt input
             if viewModel.isCustomPromptMode {
                 HStack(spacing: 8) {
@@ -688,26 +655,7 @@ struct ResultContentView: View {
                 .padding(.horizontal, Brand.Layout.margin)
             }
 
-            // Diff toggle
-            if viewModel.action.supportsDiff {
-                HStack {
-                    Spacer()
-                    Picker("", selection: $viewModel.diffSegment) {
-                        Text("Result").tag(0)
-                        Text("Changes").tag(1)
-                    }
-                    .pickerStyle(.segmented)
-                    .frame(width: 150)
-                    .tint(Brand.accentColor)
-                    .onChange(of: viewModel.diffSegment) { _, newValue in
-                        viewModel.showingDiff = newValue == 1
-                    }
-                }
-                .padding(.top, 8)
-                .padding(.horizontal, Brand.Layout.margin)
-            }
-
-            // Streaming text area — fills remaining vertical space
+            // Streaming text area — fills remaining vertical space, hero element
             HStack(spacing: 0) {
                 // Accent left border
                 RoundedRectangle(cornerRadius: 1)
@@ -727,16 +675,33 @@ struct ResultContentView: View {
                 RoundedRectangle(cornerRadius: Brand.Layout.smallCornerRadius)
                     .fill(Color(nsColor: .textBackgroundColor))
             )
-            .padding(.top, 8)
+            .padding(.top, 10)
             .padding(.horizontal, Brand.Layout.margin)
 
-            // Stats row — always present to avoid layout jumps, content hidden when empty
-            Text(viewModel.statsText.isEmpty ? " " : viewModel.statsText)
-                .font(Brand.Typography.stats)
-                .tracking(0.3)
-                .foregroundStyle(.tertiary)
-                .opacity(viewModel.statsText.isEmpty ? 0 : 1)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            // Stats row + diff link
+            HStack(spacing: 0) {
+                Text(viewModel.statsText.isEmpty ? " " : viewModel.statsText)
+                    .font(Brand.Typography.stats)
+                    .tracking(0.3)
+                    .foregroundStyle(.tertiary)
+                    .opacity(viewModel.statsText.isEmpty ? 0 : 1)
+                    .lineLimit(1)
+
+                if viewModel.action.supportsDiff {
+                    Spacer(minLength: 4)
+                    Button {
+                        viewModel.showingDiff.toggle()
+                        viewModel.diffSegment = viewModel.showingDiff ? 1 : 0
+                    } label: {
+                        Text(viewModel.showingDiff ? "Show result" : "Show changes")
+                            .font(.system(size: 11))
+                            .foregroundStyle(Brand.accentColor)
+                    }
+                    .buttonStyle(.plain)
+                } else {
+                    Spacer()
+                }
+            }
                 .padding(.top, 6)
                 .padding(.horizontal, Brand.Layout.margin + 2)
 
@@ -745,42 +710,42 @@ struct ResultContentView: View {
                 .padding(.top, 8)
                 .padding(.horizontal, Brand.Layout.margin)
 
-            // Button bar
+            // Button bar — always rendered, hidden via opacity to prevent layout shifts
             HStack(spacing: 6) {
-                if viewModel.isRetryVisible && !viewModel.isProcessing {
-                    VStack(spacing: 3) {
-                        Button {
-                            onRetry()
-                        } label: {
-                            HStack(spacing: 4) {
-                                Image(systemName: "arrow.clockwise")
-                                Text("Rewrite")
-                            }
+                VStack(spacing: 3) {
+                    Button {
+                        onRetry()
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "arrow.clockwise")
+                            Text("Rewrite")
                         }
-                        .buttonStyle(BrandButtonStyle(prominent: false))
-                        .keyboardShortcut("e", modifiers: .command)
-                        Text("⌘E")
-                            .font(.system(size: 9, design: .monospaced))
-                            .foregroundStyle(.tertiary)
                     }
+                    .buttonStyle(BrandButtonStyle(prominent: false))
+                    .keyboardShortcut("e", modifiers: .command)
+                    Text("⌘E")
+                        .font(.system(size: 9, design: .monospaced))
+                        .foregroundStyle(.tertiary)
                 }
+                .opacity(viewModel.isRetryVisible && !viewModel.isProcessing ? 1 : 0)
+                .disabled(viewModel.isProcessing || !viewModel.isRetryVisible)
 
-                if !viewModel.isProcessing {
-                    VStack(spacing: 3) {
-                        Button {
-                            onCopyAndClose()
-                        } label: {
-                            HStack(spacing: 4) {
-                                Image(systemName: "doc.on.doc")
-                                Text("Copy")
-                            }
+                VStack(spacing: 3) {
+                    Button {
+                        onCopyAndClose()
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "doc.on.doc")
+                            Text("Copy")
                         }
-                        .buttonStyle(BrandButtonStyle(prominent: false))
-                        Text("⌘C")
-                            .font(.system(size: 9, design: .monospaced))
-                            .foregroundStyle(.tertiary)
                     }
+                    .buttonStyle(BrandButtonStyle(prominent: false))
+                    Text("⌘C")
+                        .font(.system(size: 9, design: .monospaced))
+                        .foregroundStyle(.tertiary)
                 }
+                .opacity(viewModel.isProcessing ? 0 : 1)
+                .disabled(viewModel.isProcessing)
 
                 if viewModel.canSavePrompt && !viewModel.promptSaved {
                     Button {
@@ -840,6 +805,28 @@ struct ResultContentView: View {
     // MARK: - Style Dropdown Menu
 
     @State private var isStyleMenuHovered = false
+
+    // MARK: - Diff Pill Button
+
+    private func diffPillButton(_ label: String, tag: Int) -> some View {
+        let isActive = viewModel.diffSegment == tag
+        return Button {
+            viewModel.diffSegment = tag
+            viewModel.showingDiff = tag == 1
+        } label: {
+            Text(label)
+                .font(.system(size: 10, weight: isActive ? .semibold : .regular))
+                .foregroundStyle(isActive ? .primary : .secondary)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 3)
+                .background(
+                    Capsule()
+                        .fill(isActive ? Color(nsColor: .textBackgroundColor) : .clear)
+                        .shadow(color: isActive ? .black.opacity(0.08) : .clear, radius: 1, y: 0.5)
+                )
+        }
+        .buttonStyle(.plain)
+    }
 
     private var styleMenu: some View {
         VStack(alignment: .leading, spacing: 3) {
@@ -910,7 +897,6 @@ final class ResultWindowController {
 
     private var window: ResultPanel?
     private var processingTask: Task<Void, Never>?
-    private var toneDetectionTask: Task<Void, Never>?
     private var sourceApp: NSRunningApplication?
     private var originalText: String = ""
     private var currentAction: WritingAction = .style(.proofread)
@@ -996,16 +982,6 @@ final class ResultWindowController {
 
         // Set up keyboard shortcuts
         setupKeyboardShortcuts()
-
-        // Launch tone detection in parallel (stays valid across style changes)
-        toneDetectionTask?.cancel()
-        vm.isDetectingTone = true
-        toneDetectionTask = Task {
-            let tone = await ToneDetectionService.shared.detectTone(for: originalText)
-            guard !Task.isCancelled else { return }
-            vm.detectedTone = tone
-            vm.isDetectingTone = false
-        }
 
         // Start AI processing (unless waiting for custom prompt input)
         if vm.isCustomPromptMode {
@@ -1190,7 +1166,6 @@ final class ResultWindowController {
 
     private func dismiss() {
         processingTask?.cancel()
-        toneDetectionTask?.cancel()
         if let localKeyMonitor {
             NSEvent.removeMonitor(localKeyMonitor)
         }
