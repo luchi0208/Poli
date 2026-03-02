@@ -786,34 +786,36 @@ struct ResultContentView: View {
 
                 Spacer()
 
-                Button {
-                    onCancel()
-                } label: {
-                    HStack(spacing: 4) {
+                VStack(spacing: 3) {
+                    Button {
+                        onCancel()
+                    } label: {
                         Text("Close")
-                        Text("esc")
-                            .font(.system(size: 10, design: .monospaced))
-                            .foregroundStyle(.tertiary)
                     }
+                    .buttonStyle(BrandButtonStyle(prominent: false, tint: Brand.errorColor))
+                    Text("esc")
+                        .font(.system(size: 9, design: .monospaced))
+                        .foregroundStyle(.tertiary)
                 }
-                .buttonStyle(BrandButtonStyle(prominent: false, tint: Brand.errorColor))
 
-                Button {
-                    let text = viewModel.resultText
-                    guard !text.isEmpty else { return }
-                    onAccept(text)
-                } label: {
-                    HStack(spacing: 4) {
-                        Image(systemName: "checkmark")
-                        Text("Replace")
-                        Text("⌘R")
-                            .font(.system(size: 10, design: .monospaced))
-                            .foregroundStyle(.white.opacity(0.6))
+                VStack(spacing: 3) {
+                    Button {
+                        let text = viewModel.resultText
+                        guard !text.isEmpty else { return }
+                        onAccept(text)
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: "checkmark")
+                            Text("Replace")
+                        }
                     }
+                    .buttonStyle(BrandButtonStyle(isEnabled: viewModel.isAcceptEnabled))
+                    .disabled(!viewModel.isAcceptEnabled)
+                    .keyboardShortcut("r", modifiers: .command)
+                    Text("⌘R")
+                        .font(.system(size: 9, design: .monospaced))
+                        .foregroundStyle(.tertiary)
                 }
-                .buttonStyle(BrandButtonStyle(isEnabled: viewModel.isAcceptEnabled))
-                .disabled(!viewModel.isAcceptEnabled)
-                .keyboardShortcut("r", modifiers: .command)
             }
             .padding(.top, 8)
             .padding(.horizontal, Brand.Layout.margin)

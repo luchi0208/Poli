@@ -1,1 +1,38 @@
+# Claude
 CLAUDE.md
+
+# Xcode
+DerivedData/
+build/
+*.xcodeproj/
+xcuserdata/
+*.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+
+# XcodeGen regenerates the project
+# Keep project.yml, ignore generated .xcodeproj
+
+# macOS
+.DS_Store
+*.swp
+*~
+
+# SPM
+.build/
+.swiftpm/
+Package.resolved
+
+# Icon working files
+icon-design/
+
+# Signing & distribution
+*.p12
+*.mobileprovision
+*.cer
+*.env
+
+# Archives & exports
+*.xcarchive
+*.dmg
+*.zip
+*.app
