@@ -1,0 +1,41 @@
+name: WritingAssistant
+options:
+  bundleIdPrefix: com.luannguyen
+  deploymentTarget:
+    macOS: "26.0"
+  xcodeVersion: "26"
+  minimumXcodeGenVersion: "2.0"
+
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: "2.7.0"
+  Lottie:
+    url: https://github.com/airbnb/lottie-spm
+    from: "4.5.0"
+
+targets:
+  WritingAssistant:
+    type: application
+    platform: macOS
+    sources:
+      - WritingAssistant
+    dependencies:
+      - package: Sparkle
+      - package: Lottie
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.luannguyen.WritingAssistant
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        SWIFT_VERSION: "6.2"
+        MACOSX_DEPLOYMENT_TARGET: "26.0"
+        INFOPLIST_FILE: WritingAssistant/Info.plist
+        CODE_SIGN_ENTITLEMENTS: WritingAssistant/WritingAssistant.entitlements
+        CODE_SIGN_STYLE: Automatic
+        ENABLE_HARDENED_RUNTIME: YES
+        LD_RUNPATH_SEARCH_PATHS: "$(inherited) @executable_path/../Frameworks"
+        COMBINE_HIDPI_IMAGES: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: false
+        LSUIElement: true
