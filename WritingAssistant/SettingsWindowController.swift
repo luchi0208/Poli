@@ -8,6 +8,7 @@ import SwiftUI
 struct SettingsContentView: View {
     @State private var launchAtLogin = SMAppService.mainApp.status == .enabled
     @State private var smartSuggestions = ContextSuggestionsPreference.isEnabled
+    @State private var promptVersion = PromptVersionManager.active
     @State var hotkeyString: String
     @State var selectedLanguage: String
     let version: String
@@ -99,6 +100,39 @@ struct SettingsContentView: View {
                 .padding(.leading, 30)
                 .padding(.top, 4)
 
+            // Prompts section
+            Text("PROMPTS")
+                .font(.system(size: 10, weight: .semibold))
+                .tracking(1.2)
+                .foregroundStyle(.tertiary)
+                .padding(.top, 28)
+                .padding(.bottom, 10)
+
+            HStack(spacing: 10) {
+                Image(systemName: "text.quote")
+                    .font(.system(size: 14))
+                    .foregroundStyle(Brand.accentColor)
+                    .frame(width: 20)
+                Text("Prompt Style")
+                    .font(Brand.Typography.body)
+                Spacer()
+                Picker("", selection: $promptVersion) {
+                    ForEach(PromptVersion.allCases, id: \.self) { version in
+                        Text(version.displayName).tag(version)
+                    }
+                }
+                .frame(width: 180)
+                .onChange(of: promptVersion) { _, newValue in
+                    PromptVersionManager.active = newValue
+                }
+            }
+
+            Text(promptVersion.description)
+                .font(Brand.Typography.captionSecondary)
+                .foregroundStyle(.tertiary)
+                .padding(.leading, 30)
+                .padding(.top, 4)
+
             // Language section
             Text("LANGUAGE")
                 .font(.system(size: 10, weight: .semibold))
@@ -170,7 +204,7 @@ struct SettingsContentView: View {
         }
         .padding(.horizontal, Brand.Layout.margin)
         .padding(.bottom, Brand.Layout.margin)
-        .frame(width: 420, height: 440)
+        .frame(width: 420, height: 560)
         .background(Brand.surfaceColor)
     }
 }

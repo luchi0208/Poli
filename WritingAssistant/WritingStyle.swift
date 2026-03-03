@@ -95,6 +95,13 @@ enum WritingStyle: String, CaseIterable, Sendable {
     }
 
     var systemPrompt: String {
+        switch PromptVersionManager.active {
+        case .v1: return systemPromptV1
+        case .v2: return systemPromptV2
+        }
+    }
+
+    private var systemPromptV1: String {
         switch self {
         case .proofread:
             return """
@@ -202,6 +209,107 @@ enum WritingStyle: String, CaseIterable, Sendable {
         }
     }
 
+    private var systemPromptV2: String {
+        switch self {
+        case .proofread:
+            return """
+            Fix spelling, grammar, and punctuation errors. \
+            DO NOT rewrite, rephrase, or change tone. Only correct mistakes. \
+            Output the corrected text only. Same length as input.
+            """
+        case .fixGrammar:
+            return """
+            Fix grammar errors only. \
+            DO NOT change spelling, punctuation style, tone, or word choice. \
+            Output the corrected text only. Same length as input.
+            """
+        case .professional:
+            return """
+            Rewrite in a formal, professional tone for business communication. \
+            Keep the same meaning. Match the input length. \
+            Output the rewritten text only.
+            """
+        case .casual:
+            return """
+            Rewrite in a casual, conversational tone. \
+            Keep the same meaning. Sound natural and approachable. \
+            Output the rewritten text only. Match the input length.
+            """
+        case .friendly:
+            return """
+            Rewrite in a warm, friendly, encouraging tone. \
+            Keep the same meaning. Be personable and positive. \
+            Output the rewritten text only. Match the input length.
+            """
+        case .formal:
+            return """
+            Rewrite in a highly formal, polished tone for official or academic use. \
+            Use sophisticated vocabulary. Keep the same meaning. \
+            Output the rewritten text only. Match the input length.
+            """
+        case .creative:
+            return """
+            Rewrite with vivid, engaging, expressive language. \
+            Add flair while keeping the core meaning. \
+            Output the rewritten text only. Match the input length.
+            """
+        case .concise:
+            return """
+            Rewrite to be shorter and more direct. \
+            Cut filler, redundancy, and unnecessary words. Keep the core meaning. \
+            Output the rewritten text only.
+            """
+        case .summarize:
+            return """
+            Summarize the text in 1-3 sentences. \
+            Capture only the key points and main ideas. \
+            Output the summary only.
+            """
+        case .expand:
+            return """
+            Expand the text with more detail and examples. \
+            Keep the original tone. Roughly double the length. \
+            Output the expanded text only.
+            """
+        case .keyPoints:
+            return """
+            Extract key points as a bulleted list. \
+            Each bullet: one sentence max. DO NOT add commentary. \
+            Output the bullets only.
+            """
+        case .translateSpanish:
+            return """
+            Translate into Spanish. Preserve tone, meaning, and formatting. \
+            DO NOT add notes or explanations. Output the translation only.
+            """
+        case .translateFrench:
+            return """
+            Translate into French. Preserve tone, meaning, and formatting. \
+            DO NOT add notes or explanations. Output the translation only.
+            """
+        case .translateGerman:
+            return """
+            Translate into German. Preserve tone, meaning, and formatting. \
+            DO NOT add notes or explanations. Output the translation only.
+            """
+        case .translateChineseSimplified:
+            return """
+            Translate into Simplified Chinese (简体中文). Preserve tone, meaning, and formatting. \
+            DO NOT add notes or explanations. Output the translation only.
+            """
+        case .translateJapanese:
+            return """
+            Translate into Japanese. Preserve tone, meaning, and formatting. \
+            DO NOT add notes or explanations. Output the translation only.
+            """
+        case .translateKorean:
+            return """
+            Translate into Korean. Preserve tone, meaning, and formatting. \
+            DO NOT add notes or explanations. Output the translation only.
+            """
+        }
+    }
+
     /// Whether a diff view makes sense for this style.
     /// Only fix styles (spelling, grammar) preserve text structure enough for a useful word diff.
     var supportsDiff: Bool {
@@ -248,17 +356,33 @@ enum WritingAction: Sendable, Equatable {
         case .style(let style):
             return style.systemPrompt
         case .custom(let prompt):
-            return """
-            You are a helpful writing assistant. Follow the user's instruction to modify or transform the text. \
-            The user's instruction is: \(prompt) \
-            Return only the result with no explanation.
-            """
+            switch PromptVersionManager.active {
+            case .v1:
+                return """
+                You are a helpful writing assistant. Follow the user's instruction to modify or transform the text. \
+                The user's instruction is: \(prompt) \
+                Return only the result with no explanation.
+                """
+            case .v2:
+                return """
+                Follow this instruction on the text: \(prompt) \
+                DO NOT add commentary. Output the result only.
+                """
+            }
         case .quickTranslate(let name):
-            return """
-            You are a translation assistant. Translate the text into \(name). \
-            Preserve the tone, meaning, and formatting of the original. \
-            Return only the translated text with no explanation.
-            """
+            switch PromptVersionManager.active {
+            case .v1:
+                return """
+                You are a translation assistant. Translate the text into \(name). \
+                Preserve the tone, meaning, and formatting of the original. \
+                Return only the translated text with no explanation.
+                """
+            case .v2:
+                return """
+                Translate into \(name). Preserve tone, meaning, and formatting. \
+                DO NOT add notes or explanations. Output the translation only.
+                """
+            }
         }
     }
 
@@ -266,6 +390,44 @@ enum WritingAction: Sendable, Equatable {
         switch self {
         case .style(let style): return style.supportsDiff
         case .custom, .quickTranslate: return false
+        }
+    }
+}
+
+// MARK: - Prompt Version
+
+enum PromptVersion: String, CaseIterable, Sendable {
+    case v1
+    case v2
+
+    var displayName: String {
+        switch self {
+        case .v1: return "Standard"
+        case .v2: return "Apple-Optimized"
+        }
+    }
+
+    var description: String {
+        switch self {
+        case .v1: return "Current prompts — detailed, conversational style"
+        case .v2: return "Shorter, imperative prompts tuned for Foundation Models"
+        }
+    }
+}
+
+enum PromptVersionManager: Sendable {
+    nonisolated(unsafe) private static let key = "activePromptVersion"
+
+    static var active: PromptVersion {
+        get {
+            guard let raw = UserDefaults.standard.string(forKey: key),
+                  let version = PromptVersion(rawValue: raw) else {
+                return .v1
+            }
+            return version
+        }
+        set {
+            UserDefaults.standard.set(newValue.rawValue, forKey: key)
         }
     }
 }
