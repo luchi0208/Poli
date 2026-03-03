@@ -70,9 +70,10 @@ Poli is a lightweight macOS menu bar app that gives you system-wide writing tool
 
 Download the latest `.dmg` from the [Releases](../../releases) page.
 
-### Homebrew (coming soon)
+### Homebrew
 
 ```bash
+brew tap luchi0208/poli
 brew install --cask poli
 ```
 
