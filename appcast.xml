@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="yes"?>
+<rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>Poli</title>
+        <item>
+            <title>1.0</title>
+            <pubDate>Tue, 03 Mar 2026 21:09:26 +1300</pubDate>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>1.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>26.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/luchi0208/Poli/releases/download/v1.0/Poli-1.0.dmg" length="3442507" type="application/octet-stream" sparkle:edSignature="rH8sZ2LbYTH4lXyl1hDJ6+UvUk06V50mKVUQavQF2D/oteSw5OzcAog2WKVnZE0Ofq5hgswUZmJvVrKFmn1oAg=="/>
+        </item>
+    </channel>
+</rss>
