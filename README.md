@@ -18,6 +18,10 @@
   <a href="#license">License</a>
 </p>
 
+<p align="center">
+  <video src="https://github.com/user-attachments/assets/demo1080.mov" width="720" autoplay loop muted></video>
+</p>
+
 ---
 
 Poli is a lightweight macOS menu bar app that gives you system-wide writing tools — proofread, rewrite, summarize, translate, and more — powered entirely by Apple's on-device Foundation Models. It works in **every app**, including Electron apps like Slack, Teams, Discord, and WhatsApp.
@@ -74,6 +78,16 @@ brew install --cask poli
 3. **Press the hotkey** (default: `Control + Option + C`).
 4. **Pick a writing style** from the popup.
 5. **Review the result** and click Replace (`Cmd + R`) or close with `Esc`.
+
+<p align="center">
+  <img src="picker.png" width="600" alt="Style picker showing writing styles">
+  <br><em>Pick a writing style — recent styles appear at the top</em>
+</p>
+
+<p align="center">
+  <img src="mainview.png" width="600" alt="Result view with diff highlighting">
+  <br><em>Review changes with word-level diff before replacing</em>
+</p>
 
 You can also access Poli from the menu bar icon or via **Services** (right-click > Services).
 
