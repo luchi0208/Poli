@@ -22,6 +22,13 @@
   --ink:#1a1a1a;--ink-light:#4a4a4a;--ink-muted:#8a8a7a;
   --radius:16px;--radius-lg:24px;--radius-xl:32px;
 }
+@media(prefers-color-scheme:dark){
+  :root{
+    --teal:#6aaf9f;--teal-light:#8acfbf;--teal-dark:#5a9f8f;
+    --sand:#1e1e1e;--sand-light:#141414;--sand-dark:#2a2a2a;
+    --ink:#e8e8e8;--ink-light:#c0c0c0;--ink-muted:#8a8a8a;
+  }
+}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{
   font-family:'DM Sans',system-ui,sans-serif;
@@ -42,7 +49,10 @@ nav{
   backdrop-filter:blur(20px) saturate(1.8);
   -webkit-backdrop-filter:blur(20px) saturate(1.8);
   background:rgba(245,240,232,.75);
-  border-bottom:1px solid rgba(0,0,0,.06);
+  border-bottom:1px solid rgba(128,128,128,.1);
+}
+@media(prefers-color-scheme:dark){
+  nav{background:rgba(20,20,20,.8)}
 }
 .nav-inner{
   max-width:1100px;margin:0 auto;padding:14px 32px;
@@ -181,8 +191,8 @@ nav{
 .screenshot-item{
   border-radius:var(--radius-lg);overflow:hidden;
   box-shadow:0 12px 48px rgba(0,0,0,.08);
-  border:1px solid rgba(0,0,0,.06);
-  background:#fff;
+  border:1px solid var(--sand-dark);
+  background:var(--sand);
 }
 .screenshot-item img{width:100%;display:block}
 .screenshot-caption{
@@ -212,7 +222,7 @@ nav{
 }
 .privacy-point .icon{
   width:48px;height:48px;border-radius:14px;
-  background:#fff;border:1px solid var(--sand-dark);
+  background:var(--sand-light);border:1px solid var(--sand-dark);
   display:flex;align-items:center;justify-content:center;font-size:22px;
 }
 .privacy-point span{font-size:13px;font-weight:500;color:var(--ink-light)}
@@ -237,7 +247,7 @@ nav{
 .shortcuts tr:last-child td{border-bottom:none}
 .shortcuts kbd{
   display:inline-block;padding:3px 10px;
-  background:#fff;border:1px solid var(--sand-dark);border-radius:6px;
+  background:var(--sand-light);border:1px solid var(--sand-dark);border-radius:6px;
   font-family:'DM Sans',monospace;font-size:13px;font-weight:500;
   color:var(--teal-dark);box-shadow:0 1px 2px rgba(0,0,0,.04);
 }
@@ -255,7 +265,7 @@ nav{
 }
 .install-methods{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
 .install-card{
-  background:#fff;border:1px solid var(--sand-dark);
+  background:var(--sand-light);border:1px solid var(--sand-dark);
   border-radius:var(--radius-lg);padding:36px;
   flex:1;min-width:280px;max-width:360px;text-align:left;
   transition:all .3s;
