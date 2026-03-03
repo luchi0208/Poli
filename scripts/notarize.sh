@@ -58,10 +58,15 @@ xcodebuild -exportArchive \
     -exportOptionsPlist "$BUILD_DIR/ExportOptions.plist" \
     -exportPath "$BUILD_DIR/export"
 
-APP_PATH="$BUILD_DIR/export/$APP_NAME.app"
+PRODUCT_NAME="Poli"
+APP_PATH="$BUILD_DIR/export/$PRODUCT_NAME.app"
+ZIP_PATH="$BUILD_DIR/$PRODUCT_NAME.zip"
+
+echo "=== Zipping app for notarization ==="
+ditto -c -k --keepParent "$APP_PATH" "$ZIP_PATH"
 
 echo "=== Submitting for notarization ==="
-xcrun notarytool submit "$APP_PATH" \
+xcrun notarytool submit "$ZIP_PATH" \
     --apple-id "$APPLE_ID" \
     --password "$APP_PASSWORD" \
     --team-id "$TEAM_ID" \

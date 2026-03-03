@@ -7,12 +7,12 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 BUILD_DIR="$PROJECT_DIR/build"
-APP_NAME="WritingAssistant"
-DMG_NAME="$APP_NAME"
+APP_NAME="Poli"
+DMG_NAME="Poli"
 APP_PATH="${1:-$BUILD_DIR/export/$APP_NAME.app}"
 DMG_PATH="$BUILD_DIR/$DMG_NAME.dmg"
 TEMP_DMG="$BUILD_DIR/$DMG_NAME-temp.dmg"
-VOLUME_NAME="$APP_NAME"
+VOLUME_NAME="Poli"
 
 if [ ! -d "$APP_PATH" ]; then
     echo "Error: App not found at $APP_PATH"
@@ -47,7 +47,7 @@ MOUNT_DIR=$(hdiutil attach "$TEMP_DMG" | grep "/Volumes/" | awk '{print $3}')
 
 # Copy app
 echo "Copying app..."
-cp -R "$APP_PATH" "$MOUNT_DIR/"
+ditto "$APP_PATH" "$MOUNT_DIR/$(basename "$APP_PATH")"
 
 # Create Applications symlink
 ln -s /Applications "$MOUNT_DIR/Applications"
