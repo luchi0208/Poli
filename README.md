@@ -62,6 +62,7 @@ Poli is a lightweight macOS menu bar app that gives you system-wide writing tool
 
 - macOS 26.0 or later
 - Apple Silicon Mac
+- **Accessibility permission** — Poli reads selected text from the frontmost app and writes the result back using the macOS Accessibility API. Without it, Poli cannot detect what you've selected or replace it. This is the same API used by password managers and text expanders. Your text never leaves your Mac.
 
 ## Installation
 
@@ -94,6 +95,19 @@ brew install --cask poli
 </p>
 
 You can also access Poli from the menu bar icon or via **Services** (right-click > Services).
+
+### Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `⌃⌥C` | Trigger Poli (customizable in Settings) |
+| `1`–`9` | Quick-select a style by number |
+| `↑` `↓` | Navigate the style list |
+| `Return` | Confirm selected style |
+| `⌘R` | Replace text with result |
+| `⌘E` | Rewrite (retry with same style) |
+| `⌘C` | Copy result to clipboard |
+| `Esc` | Close picker or result window |
 
 ## Building from Source
 
