@@ -19,6 +19,10 @@
 </p>
 
 <p align="center">
+
+https://github.com/user-attachments/assets/3b20d222-a9f5-49c5-ab48-9fc1b399b331
+
+
   <video src="https://github.com/user-attachments/assets/demo1080.mov" width="720" autoplay loop muted></video>
 </p>
 
@@ -129,3 +133,4 @@ Contributions are welcome! Please open an issue first to discuss what you'd like
 ## License
 
 [MIT](LICENSE) &copy; 2026 Luan Nguyen
+
